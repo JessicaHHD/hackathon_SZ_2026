@@ -1,0 +1,70 @@
+{
+  "story_id": "thunder_bear",
+  "book_metadata": {
+    "title": "小熊不怕打雷了",
+    "ui_theme": "warm_yellow"
+  },
+  "pages": [
+    {
+      "page_num": 0,
+      "type": "cover",
+      "text": "小熊不怕打雷了",
+      "image_url": "/generated/task_01KQ27CG4J6PQH86KTBD6B78BF.jpg",
+      "interaction": null
+    },
+    {
+      "page_num": 1,
+      "type": "story",
+      "text": "晴天的下午,小熊在家里搭积木。",
+      "image_url": "/generated/tb_p1.png",
+      "interaction": null
+    },
+    {
+      "page_num": 2,
+      "type": "story",
+      "text": "咦?天怎么变暗了?小熊停下了手。",
+      "image_url": "/generated/tb_p2.png",
+      "interaction": null
+    },
+    {
+      "page_num": 3,
+      "type": "story",
+      "text": "风呼呼地吹进来。快帮小熊关上窗户吧!",
+      "image_url": "/generated/tb_p3_off.png",
+      "interaction": {
+        "question": "点一下窗户",
+        "options": [
+          "呼——安静多了。房间变得好暗呀……"
+        ],
+        "plot_pivot": "呼——安静多了。房间变得好暗呀……"
+      }
+    },
+    {
+      "page_num": 4,
+      "type": "story",
+      "text": "房间好暗。帮小熊打开台灯吧!",
+      "image_url": "/generated/tb_p3_on.png",
+      "interaction": {
+        "question": "点一下台灯",
+        "options": [
+          "咔嗒——暖暖的光亮了起来。"
+        ],
+        "plot_pivot": "咔嗒——暖暖的光亮了起来。"
+      }
+    },
+    {
+      "page_num": 5,
+      "type": "story",
+      "text": "有灯光陪着,打雷也不可怕了。小熊安心地抱着抱枕。",
+      "image_url": "/generated/tb_p4_on.png",
+      "interaction": null
+    },
+    {
+      "page_num": 99,
+      "type": "back",
+      "text": "故事结束，下次见！",
+      "image_url": "/generated/task_01KQ27CPMFXGP3EPE54QC02HNH.jpg",
+      "interaction": null
+    }
+  ]
+}

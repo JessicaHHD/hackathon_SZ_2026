@@ -1,0 +1,94 @@
+{
+  "book_metadata": {
+    "title": "小花的奇妙梦旅行",
+    "ui_theme": "warm_yellow",
+    "visual_anchors": "4-year-old girl, twin ponytails, pink dress"
+  },
+  "pages": [
+    {
+      "page_num": 0,
+      "type": "cover",
+      "text": "小花的奇妙梦旅行",
+      "tts_cue": "庄重地",
+      "image_prompt": "儿童绘本封面，标题《小花的奇妙梦旅行》，4-year-old girl, twin ponytails, pink dress，温馨插画，精美装帧",
+      "image_url": "/generated/60a7d36d0d23.png",
+      "interaction": null
+    },
+    {
+      "page_num": 1,
+      "text": "晚上，小花抱着软软的小枕头，很快进入梦乡。月光轻轻洒进房间，她梦见自己来到一个会发光的神奇地方。",
+      "tts_cue": "轻轻地",
+      "image_prompt": "夜晚的儿童卧室里，小花抱着小枕头安静入睡，窗外月光温柔照进来，星星闪闪，梦境入口像发光云朵一样在床边悄悄打开，氛围温暖、神奇、适合儿童，主角为4岁女孩，双马尾，粉色裙子，soft watercolor illustration, pastel colors, children's book style, 4-year-old girl, twin ponytails, pink dress --v 6.0, flat illustration, vector art, high quality, soft lighting",
+      "interaction": null,
+      "image_url": "/generated/78da24392372.png"
+    },
+    {
+      "page_num": 2,
+      "text": "小花走进梦里的彩虹小路，脚下像棉花糖一样软。前面一边是会唱歌的花园，一边是闪着光的小云桥。",
+      "tts_cue": "好奇地",
+      "image_prompt": "梦境世界中，彩虹小路弯弯伸向远方，地面像棉花糖般柔软，一侧是会唱歌的花园开满彩色花朵，另一侧是闪闪发光的小云桥漂浮在空中，画面明亮梦幻，主角为4岁女孩，双马尾，粉色裙子，soft watercolor illustration, pastel colors, children's book style, 4-year-old girl, twin ponytails, pink dress --v 6.0, flat illustration, vector art, high quality, soft lighting",
+      "interaction": {
+        "question": "你觉得小花先去哪里看看？",
+        "options": [
+          {
+            "label": "去会唱歌的花园",
+            "plot_pivot": "小花蹦蹦跳跳走进了热闹的花园"
+          },
+          {
+            "label": "走上闪光的小云桥",
+            "plot_pivot": "小花轻轻踏上了软软的小云桥"
+          }
+        ]
+      },
+      "image_url": "/generated/601d1e8b16e1.png"
+    },
+    {
+      "page_num": 3,
+      "text": "不管走哪条路，小花都遇见了圆滚滚的星星朋友。星星朋友眨眨眼，请她一起寻找藏起来的梦之宝石。",
+      "tts_cue": "兴奋地",
+      "image_prompt": "神奇梦境里，小花遇见圆滚滚、表情可爱的星星朋友，星星漂浮在身边眨眼微笑，周围有花园元素和云桥元素交织，远处藏着发亮的梦之宝石，画面童趣、温柔、充满探索感，主角为4岁女孩，双马尾，粉色裙子，soft watercolor illustration, pastel colors, children's book style, 4-year-old girl, twin ponytails, pink dress --v 6.0, flat illustration, vector art, high quality, soft lighting",
+      "interaction": {
+        "question": "小花要怎么找梦之宝石呢？",
+        "options": [
+          {
+            "label": "跟着星星的亮光找",
+            "plot_pivot": "小花跟着一闪一闪的亮光向前出发"
+          },
+          {
+            "label": "听着风铃声音找",
+            "plot_pivot": "小花竖起小耳朵，顺着清脆声音慢慢寻找"
+          }
+        ]
+      },
+      "image_url": "/generated/8aadb5dbd021.png"
+    },
+    {
+      "page_num": 4,
+      "text": "很快，小花在一朵大大的云朵后面找到了梦之宝石。宝石亮晶晶的，把天空染成粉粉蓝蓝，漂亮极了。",
+      "tts_cue": "惊喜地",
+      "image_prompt": "梦境天空中，一朵大云后藏着亮晶晶的梦之宝石，小花开心地伸手发现宝石，天空被映照成粉色和浅蓝色，星星朋友围在旁边欢呼，画面柔和明亮，充满成就感，主角为4岁女孩，双马尾，粉色裙子，soft watercolor illustration, pastel colors, children's book style, 4-year-old girl, twin ponytails, pink dress --v 6.0, flat illustration, vector art, high quality, soft lighting",
+      "interaction": null,
+      "image_url": "/generated/0aec0b34cfdf.png"
+    },
+    {
+      "page_num": 5,
+      "text": "清晨，小花睁开眼睛，发现自己正躺在温暖的小床上。她笑眯眯地想，今晚还会不会再去那个神奇的地方呢？",
+      "tts_cue": "甜甜地",
+      "image_prompt": "清晨卧室里，阳光透过窗帘洒在小床上，小花刚刚醒来，笑眯眯地坐在床上回想美梦，房间温馨整洁，窗外有蓝天和小鸟，画面安静幸福，主角为4岁女孩，双马尾，粉色裙子，soft watercolor illustration, pastel colors, children's book style, 4-year-old girl, twin ponytails, pink dress --v 6.0, flat illustration, vector art, high quality, soft lighting",
+      "interaction": null,
+      "image_url": "/generated/2ad403988b08.png"
+    },
+    {
+      "page_num": 99,
+      "type": "back",
+      "text": "故事结束，下次见！",
+      "tts_cue": "温柔地",
+      "image_prompt": "儿童绘本封底，简洁温馨，小星星装饰，4-year-old girl, twin ponytails, pink dress，柔和背景",
+      "image_url": "/generated/ec4c1c5771ad.png",
+      "interaction": null
+    }
+  ],
+  "story_id": "1777093839",
+  "id": 1777093839662,
+  "createdAt": "2026/4/25"
+}

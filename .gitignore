@@ -1,0 +1,22 @@
+# 密钥
+.env
+*.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+.ruff_cache/
+
+# 生成的图片（体积大）
+frontend/generated/*.jpg
+frontend/generated/*.png
+frontend/generated/*.webp
+
+# 保留 stories JSON
+!frontend/generated/stories/
+
+# 系统
+.DS_Store
+Thumbs.db
