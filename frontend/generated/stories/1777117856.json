@@ -1,0 +1,93 @@
+{
+  "book_metadata": {
+    "title": "小明的奇妙梦境",
+    "ui_theme": "warm_yellow",
+    "visual_anchors": "5-year-old boy, short hair, round face, yellow hoodie"
+  },
+  "pages": [
+    {
+      "page_num": 0,
+      "type": "cover",
+      "text": "小明的奇妙梦境",
+      "tts_cue": "庄重地",
+      "image_prompt": "儿童绘本封面，标题《小明的奇妙梦境》，5-year-old boy, short hair, round face, yellow hoodie，温馨插画，精美装帧",
+      "image_url": "/generated/task_01KQ27PP008MGJ3Y3RH1FF6QN2.jpg",
+      "interaction": null
+    },
+    {
+      "page_num": 1,
+      "text": "夜里，小明抱着小熊睡着了。忽然，梦里亮起一扇闪闪的门，门后像藏着一个神奇的地方。",
+      "tts_cue": "轻轻地",
+      "image_prompt": "5岁男孩，短发，圆脸，黄色卫衣，抱着小熊睡在温暖的小床上，梦中出现一扇闪闪发光的神奇门，周围有星星和彩色云朵，soft watercolor illustration, pastel colors, children's book style，5-year-old boy, short hair, round face, yellow hoodie --v 6.0, flat illustration, vector art, high quality, soft lighting",
+      "interaction": null,
+      "image_url": "/generated/task_01KQ27PP0B44V036SEJTMC2ABR.jpg"
+    },
+    {
+      "page_num": 2,
+      "text": "小明推开门，看见前面有两条路：一条铺着彩虹石子，一条飘着棉花云朵。他停下来看了看。",
+      "tts_cue": "好奇地",
+      "image_prompt": "5岁男孩，短发，圆脸，黄色卫衣，站在神奇梦境里，面前有两条路：彩虹石子小路和棉花云朵小路，四周是梦幻花草与发光小灯，soft watercolor illustration, pastel colors, children's book style，5-year-old boy, short hair, round face, yellow hoodie --v 6.0, flat illustration, vector art, high quality, soft lighting",
+      "interaction": {
+        "question": "你觉得小明应该走哪一条路？",
+        "options": [
+          {
+            "label": "彩虹石子路",
+            "plot_pivot": "小明踩着彩虹石子，听见了叮叮咚咚的快乐声音。"
+          },
+          {
+            "label": "棉花云朵路",
+            "plot_pivot": "小明轻轻踩上云朵，像在天空里慢慢飘起来。"
+          }
+        ]
+      },
+      "image_url": "/generated/task_01KQ27PNZA3N895JEPDPXR7AEB.jpg"
+    },
+    {
+      "page_num": 3,
+      "text": "不管选哪条路，小明都来到了一片发光的花园。花朵会唱歌，小蝴蝶在空中跳圆圈舞。",
+      "tts_cue": "惊喜地",
+      "image_prompt": "5岁男孩，短发，圆脸，黄色卫衣，走进发光的梦幻花园，花朵会唱歌，蝴蝶围着他跳圆圈舞，天空柔和明亮，soft watercolor illustration, pastel colors, children's book style，5-year-old boy, short hair, round face, yellow hoodie --v 6.0, flat illustration, vector art, high quality, soft lighting",
+      "interaction": {
+        "question": "小明想先做什么呢？",
+        "options": [
+          {
+            "label": "和蝴蝶一起跳舞",
+            "plot_pivot": "小明张开手臂，开心地和蝴蝶转起圈来。"
+          },
+          {
+            "label": "听花朵唱歌",
+            "plot_pivot": "小明蹲下来认真听，花园里响起了甜甜的歌声。"
+          }
+        ]
+      },
+      "image_url": "/generated/task_01KQ27PP03JAK5A0HBM40Q9GAB.jpg"
+    },
+    {
+      "page_num": 4,
+      "text": "花园深处出现一座小桥，桥下流着星光小溪。小明慢慢走过去，觉得自己像在发光。",
+      "tts_cue": "认真地",
+      "image_prompt": "5岁男孩，短发，圆脸，黄色卫衣，走在一座小桥上，桥下是流动的星光小溪，周围有柔软的云、发亮的植物和温柔的夜色，soft watercolor illustration, pastel colors, children's book style，5-year-old boy, short hair, round face, yellow hoodie --v 6.0, flat illustration, vector art, high quality, soft lighting",
+      "interaction": null,
+      "image_url": "/generated/task_01KQ27PP09MGR8Q2M39WEAD76C.jpg"
+    },
+    {
+      "page_num": 5,
+      "text": "最后，小明坐上月亮小船，慢慢飘回了床边。他睁开眼睛，发现怀里的小熊还在，梦却像礼物一样留在心里。",
+      "tts_cue": "温柔地",
+      "image_prompt": "5岁男孩，短发，圆脸，黄色卫衣，坐在月亮形小船上回到温暖的床边，周围有星星、云朵和柔光，床上的小熊安静可爱，soft watercolor illustration, pastel colors, children's book style，5-year-old boy, short hair, round face, yellow hoodie --v 6.0, flat illustration, vector art, high quality, soft lighting",
+      "interaction": null,
+      "image_url": "/generated/task_01KQ27R4WVB35BJM96M69KYF8E.jpg"
+    },
+    {
+      "page_num": 99,
+      "type": "back",
+      "text": "故事结束，下次见！",
+      "tts_cue": "温柔地",
+      "image_prompt": "儿童绘本封底，简洁温馨，小星星装饰，5-year-old boy, short hair, round face, yellow hoodie，柔和背景",
+      "image_url": "/generated/task_01KQ27R5PEVWZ2T1NZ8T41CGXJ.jpg",
+      "interaction": null
+    }
+  ],
+  "story_id": "1777117856",
+  "char_ref_url": "/generated/task_01KQ27N366HVBT7H7RCEA4N95S.jpg"
+}

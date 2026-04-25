@@ -1,0 +1,109 @@
+{
+  "book_metadata": {
+    "title": "小明的奇妙梦之旅",
+    "ui_theme": "warm_yellow",
+    "visual_anchors": "5-year-old boy, short hair, round face, yellow hoodie"
+  },
+  "pages": [
+    {
+      "page_num": 0,
+      "type": "cover",
+      "text": "小明的奇妙梦之旅",
+      "tts_cue": "庄重地",
+      "image_prompt": "儿童绘本封面，标题《小明的奇妙梦之旅》，5-year-old boy, short hair, round face, yellow hoodie，温馨插画，精美装帧",
+      "image_url": "/generated/task_01KQ29YWVXHKS9P36HKXQCZB3D.jpg",
+      "interaction": null
+    },
+    {
+      "page_num": 1,
+      "text": "夜晚，小明抱着软软的小枕头睡着了。月光轻轻洒进房间，他眨眨眼，忽然走进了一个亮晶晶的梦里。",
+      "tts_cue": "轻轻地",
+      "image_prompt": "安静的儿童卧室，夜晚月光洒在小床上，5岁的小明进入甜甜梦乡，空气里有星星般的光点，温柔梦幻氛围，5-year-old boy, short hair, round face, yellow hoodie --v 6.0, flat illustration, vector art, high quality, soft lighting",
+      "interaction": null,
+      "image_url": "/generated/task_01KQ29YWS4WEY75DR2T0XE0C21.jpg"
+    },
+    {
+      "page_num": 2,
+      "text": "梦里有一扇会发光的云朵门。门一打开，彩虹小路弯弯地伸向远方，花朵还冲着小明微笑点头。",
+      "tts_cue": "惊喜地",
+      "image_prompt": "发光的云朵大门缓缓打开，彩虹小路通向神奇远方，路边花朵带着笑脸，梦境世界温暖明亮，soft watercolor illustration, pastel colors, children's book style，5-year-old boy, short hair, round face, yellow hoodie --v 6.0, flat illustration, vector art, high quality, soft lighting",
+      "interaction": null,
+      "image_url": "/generated/task_01KQ29YWQZEQQTKWGT171GC8BM.jpg"
+    },
+    {
+      "page_num": 3,
+      "text": "小明沿着彩虹小路往前走，听见左边传来叮咚泉水声，右边飘来香香果子味。他好想选一边去看看。",
+      "tts_cue": "好奇地",
+      "image_prompt": "彩虹小路中间站着小明，左边是闪亮泉水和小溪，右边是挂满果子的奇妙树林，空气中有梦幻光点，soft watercolor illustration, pastel colors, children's book style，5-year-old boy, short hair, round face, yellow hoodie --v 6.0, flat illustration, vector art, high quality, soft lighting",
+      "interaction": {
+        "question": "你觉得小明先去哪里呢？",
+        "options": [
+          {
+            "label": "去听泉水唱歌",
+            "plot_pivot": "小明朝着叮咚作响的泉水轻快走去"
+          },
+          {
+            "label": "去果树林闻香味",
+            "plot_pivot": "小明跑向飘着甜甜香气的果树林"
+          }
+        ]
+      },
+      "image_url": "/generated/task_01KQ29YWS43EY8PTV9F2P95E5Q.jpg"
+    },
+    {
+      "page_num": 4,
+      "text": "不管走到哪里，小明都遇见了一朵会说话的小白云。小白云眨眨眼，邀请他去更神奇的地方探险。",
+      "tts_cue": "神秘地",
+      "image_prompt": "会说话的小白云飘在小明身边，表情友好可爱，远处有会发光的山丘和星星湖泊，梦境世界层次丰富，soft watercolor illustration, pastel colors, children's book style，5-year-old boy, short hair, round face, yellow hoodie --v 6.0, flat illustration, vector art, high quality, soft lighting",
+      "interaction": {
+        "question": "小明要跟着小白云去哪里？",
+        "options": [
+          {
+            "label": "去星星湖",
+            "plot_pivot": "小明跟着小白云飞向闪闪发亮的星星湖"
+          },
+          {
+            "label": "去糖果山",
+            "plot_pivot": "小明开心地朝着甜甜的糖果山出发"
+          }
+        ]
+      },
+      "image_url": "/generated/task_01KQ29YWSEEEAGDG8NF21S40ME.jpg"
+    },
+    {
+      "page_num": 5,
+      "text": "一路上，天上的星星像小灯笼一样亮起来，还轻轻摇摆。小明伸出小手，接住了一颗会唱歌的星星种子。",
+      "tts_cue": "开心地",
+      "image_prompt": "小明在梦境中伸手接住发光的星星种子，天空布满像小灯笼一样的星星，小白云陪伴一旁，soft watercolor illustration, pastel colors, children's book style，5-year-old boy, short hair, round face, yellow hoodie --v 6.0, flat illustration, vector art, high quality, soft lighting",
+      "interaction": null,
+      "image_url": "/generated/task_01KQ2A1ESYRN5RTZ0W72NYC0Z3.jpg"
+    },
+    {
+      "page_num": 6,
+      "text": "星星种子在小明手心里发出暖暖光芒，变成一句悄悄话：愿你每天都带着好奇心，发现世界的小惊喜。",
+      "tts_cue": "温柔地",
+      "image_prompt": "发光的星星种子停在小明手心，散发温暖柔和光芒，周围浮现小惊喜般的花朵和云朵图案，soft watercolor illustration, pastel colors, children's book style，5-year-old boy, short hair, round face, yellow hoodie --v 6.0, flat illustration, vector art, high quality, soft lighting",
+      "interaction": null,
+      "image_url": "/generated/task_01KQ2A1J5F7FHH578PYNNHEN72.jpg"
+    },
+    {
+      "page_num": 7,
+      "text": "清晨，小明在小床上醒来，窗外太阳笑眯眯的。他抱着枕头想：这个奇妙的梦，下次还会来找我吗？",
+      "tts_cue": "甜甜地",
+      "image_prompt": "清晨阳光照进卧室，小明在床上醒来，表情满足又期待，窗外天空明亮温暖，梦境余韵轻轻环绕，soft watercolor illustration, pastel colors, children's book style，5-year-old boy, short hair, round face, yellow hoodie --v 6.0, flat illustration, vector art, high quality, soft lighting",
+      "interaction": null,
+      "image_url": "/generated/task_01KQ2A1KZK4VZWBTV94RF2M6T3.jpg"
+    },
+    {
+      "page_num": 99,
+      "type": "back",
+      "text": "故事结束，下次见！",
+      "tts_cue": "温柔地",
+      "image_prompt": "儿童绘本封底，简洁温馨，小星星装饰，5-year-old boy, short hair, round face, yellow hoodie，柔和背景",
+      "image_url": "/generated/task_01KQ2A1MK2WY08F742GRAQ7CJP.jpg",
+      "interaction": null
+    }
+  ],
+  "story_id": "1777120223",
+  "char_ref_url": "/generated/task_01KQ29XB9WBZ70JFNNFXKE42N3.jpg"
+}

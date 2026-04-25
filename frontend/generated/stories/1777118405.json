@@ -1,0 +1,93 @@
+{
+  "book_metadata": {
+    "title": "小明的快乐分享日",
+    "ui_theme": "warm_yellow",
+    "visual_anchors": "5-year-old boy, short hair, round face, yellow hoodie"
+  },
+  "pages": [
+    {
+      "page_num": 0,
+      "type": "cover",
+      "text": "小明的快乐分享日",
+      "tts_cue": "庄重地",
+      "image_prompt": "儿童绘本封面，标题《小明的快乐分享日》，5-year-old boy, short hair, round face, yellow hoodie，温馨插画，精美装帧",
+      "image_url": "/generated/task_01KQ287BAA2XM85S74DG1CZZ65.jpg",
+      "interaction": null
+    },
+    {
+      "page_num": 1,
+      "text": "今天，小明带着自己最喜欢的小玩具来到游乐区。他轻轻抱着玩具，眼睛亮晶晶的，准备和小朋友们一起玩。",
+      "tts_cue": "欢快地",
+      "image_prompt": "小明在明亮温暖的游乐区里，双手抱着心爱的小玩具，脸上带着期待笑容，周围有积木和地垫，画面温馨童趣，包含角色特征：5岁男孩，短发，圆脸，黄色卫衣，soft watercolor illustration, pastel colors, children's book style --v 6.0, flat illustration, vector art, high quality, soft lighting",
+      "interaction": null,
+      "image_url": "/generated/task_01KQ287BN282PK6SFXRPPZN0TK.jpg"
+    },
+    {
+      "page_num": 2,
+      "text": "这时，一个小朋友看着小明的玩具，露出羡慕的表情。小明眨眨眼，心里想：要不要邀请大家一起玩呢？",
+      "tts_cue": "好奇地",
+      "image_prompt": "小明站在游乐区中间，看着一位对玩具很感兴趣的小朋友，神情认真又温柔，周围还有几位小朋友，气氛友好，包含角色特征：5岁男孩，短发，圆脸，黄色卫衣，soft watercolor illustration, pastel colors, children's book style --v 6.0, flat illustration, vector art, high quality, soft lighting",
+      "interaction": {
+        "question": "你觉得小明应该怎么做？",
+        "options": [
+          {
+            "label": "主动邀请大家",
+            "plot_pivot": "小明微笑着邀请小朋友们一起玩玩具"
+          },
+          {
+            "label": "先问问大家想不想玩",
+            "plot_pivot": "小明轻声问大家愿不愿意一起分享玩具"
+          }
+        ]
+      },
+      "image_url": "/generated/task_01KQ287BA1V3B4WK1AHN44985C.jpg"
+    },
+    {
+      "page_num": 3,
+      "text": "小明把玩具轻轻递出去，小朋友们开心地围了过来。大家你看看我，我看看你，商量着怎么一起玩才最有趣。",
+      "tts_cue": "温柔地",
+      "image_prompt": "小明把心爱的玩具分享给身边的小朋友们，大家围成一圈，表情开心，动作礼貌友好，游乐区温暖明亮，包含角色特征：5岁男孩，短发，圆脸，黄色卫衣，soft watercolor illustration, pastel colors, children's book style --v 6.0, flat illustration, vector art, high quality, soft lighting",
+      "interaction": {
+        "question": "大家可以怎样一起玩呢？",
+        "options": [
+          {
+            "label": "轮流玩一玩",
+            "plot_pivot": "大家排好顺序，轮流体验玩具的乐趣"
+          },
+          {
+            "label": "一起合作玩",
+            "plot_pivot": "大家围在一起合作，让游戏变得更精彩"
+          }
+        ]
+      },
+      "image_url": "/generated/task_01KQ287BBC5YJ6XB8EJ5BEKR77.jpg"
+    },
+    {
+      "page_num": 4,
+      "text": "不管是轮流玩，还是一起合作，笑声都飘满了小小的游乐区。小明发现，分享让快乐变得更多、更大了。",
+      "tts_cue": "开心地",
+      "image_prompt": "小明和小朋友们一起快乐玩耍，笑声洋溢在游乐区，气氛明亮轻松，大家相处融洽，包含角色特征：5岁男孩，短发，圆脸，黄色卫衣，soft watercolor illustration, pastel colors, children's book style --v 6.0, flat illustration, vector art, high quality, soft lighting",
+      "interaction": null,
+      "image_url": "/generated/task_01KQ287BN5086XSBQRRQ5XTYZR.jpg"
+    },
+    {
+      "page_num": 5,
+      "text": "回家的时候，小明抱着玩具甜甜地笑了。他知道，心爱的东西愿意分享出去，就能交到朋友，也能收获双倍快乐！",
+      "tts_cue": "自豪地",
+      "image_prompt": "小明在回家路上抱着玩具露出满足笑容，夕阳温暖，小朋友们挥手告别，画面温柔治愈，包含角色特征：5岁男孩，短发，圆脸，黄色卫衣，soft watercolor illustration, pastel colors, children's book style --v 6.0, flat illustration, vector art, high quality, soft lighting",
+      "interaction": null,
+      "image_url": "/generated/task_01KQ28AXVR1WY5Z8XTJ06VCNTG.jpg"
+    },
+    {
+      "page_num": 99,
+      "type": "back",
+      "text": "故事结束，下次见！",
+      "tts_cue": "温柔地",
+      "image_prompt": "儿童绘本封底，简洁温馨，小星星装饰，5-year-old boy, short hair, round face, yellow hoodie，柔和背景",
+      "image_url": "/generated/task_01KQ28AYQTR3W08EA6GZKSGZW7.jpg",
+      "interaction": null
+    }
+  ],
+  "story_id": "1777118405",
+  "char_ref_url": "/generated/task_01KQ285TZEZB8NR1K9BQ4ANDK1.jpg"
+}

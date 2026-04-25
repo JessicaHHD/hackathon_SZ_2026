@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>故事魔法师</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://unpkg.com/jquery@3.7.1/dist/jquery.min.js"></script>
+  <script src="/turn.min.js"></script>
+  <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Lexend:wght@400;500;600&family=Be+Vietnam+Pro:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Lexend','PingFang SC',sans-serif;height:100vh;overflow:hidden}
+    #app{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;position:relative}
+
+    .video-bg{position:fixed;inset:0;z-index:0;overflow:hidden}
+    .video-bg video{width:100%;height:100%;object-fit:cover}
+    .video-bg::after{content:'';position:absolute;inset:0;background:rgba(255,249,233,0.15)}
+
+    /* 毛玻璃卡片 */
+    .center-card{position:relative;z-index:1;width:560px;background:rgba(255,255,255,0.45);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:32px;border:1px solid rgba(255,255,255,0.6);box-shadow:0 10px 40px rgba(0,0,0,0.08);padding:40px 36px;max-height:94vh;overflow-y:auto;animation:fadeIn .8s ease-out}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    .center-card::-webkit-scrollbar{width:3px}
+    .center-card::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.1);border-radius:2px}
+
+    .panel-logo{text-align:center;margin-bottom:28px}
+    .panel-logo h1{font-family:'Ma Shan Zheng',sans-serif;font-size:26px;color:#374151;display:flex;align-items:center;justify-content:center;gap:10px}
+    .panel-logo p{font-size:13px;color:#6b7280;margin-top:6px;font-family:'Be Vietnam Pro',sans-serif}
+    .logo-icon{width:44px;height:44px;background:#fef08a;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+
+    .char-entry{display:flex;align-items:center;gap:14px;padding:14px 18px;background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.5);border-radius:20px;cursor:pointer;margin-bottom:20px;transition:all .2s}
+    .char-entry:hover{background:rgba(255,255,255,0.65)}
+
+    .field{margin-bottom:20px}
+    .field label{display:block;font-size:11px;font-weight:600;color:#6b7280;margin-bottom:8px;margin-left:4px;letter-spacing:.8px;text-transform:uppercase}
+    .field textarea{width:100%;padding:14px 16px;background:rgba(255,255,255,0.4);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,0.5);border-radius:20px;font-family:'Be Vietnam Pro','PingFang SC',sans-serif;font-size:15px;color:#374151;outline:none;resize:none;height:88px;line-height:1.7;transition:all .2s}
+    .field textarea:focus{background:rgba(255,255,255,0.8);box-shadow:0 0 0 2px rgba(96,165,250,0.4)}
+
+    .sec-label{font-size:11px;font-weight:600;color:#6b7280;margin-bottom:10px;letter-spacing:.8px;text-transform:uppercase}
+
+    .themes-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+    .theme-chip{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 16px;border-radius:16px;border:1px solid rgba(255,255,255,0.4);font-size:14px;font-weight:500;color:#374151;cursor:pointer;transition:all .2s}
+    .theme-chip:hover{transform:scale(1.03)}.theme-chip:active{transform:scale(0.97)}
+    .theme-chip.sel{border-color:rgba(255,255,255,0.8);box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+    .chip-brave{background:rgba(250,204,21,0.25)}.chip-bath{background:rgba(96,165,250,0.2)}
+    .chip-dream{background:rgba(192,132,252,0.2)}.chip-share{background:rgba(74,222,128,0.2)}
+
+    .page-count-row{display:flex;gap:8px;margin-bottom:20px}
+    .pc-btn{flex:1;padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.4);font-family:'Lexend',sans-serif;font-size:13px;font-weight:500;color:#374151;cursor:pointer;transition:all .2s;text-align:center}
+    .pc-btn.active{background:#facc15;border-color:#ca8a04;color:#713f12;font-weight:600}
+
+    .ref-grid{display:flex;justify-content:center;gap:10px;margin-bottom:24px;overflow-x:auto;padding-bottom:4px}
+    .ref-img{width:60px;height:60px;flex-shrink:0;border-radius:14px;overflow:hidden;border:2px solid rgba(255,255,255,0.8);cursor:pointer;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+    .ref-img img{width:100%;height:100%;object-fit:cover}
+    .ref-img.active{border-color:#60a5fa;transform:scale(1.1);box-shadow:0 4px 12px rgba(96,165,250,0.4)}
+    .ref-img:hover{transform:scale(1.08)}
+
+    .btn-start{width:100%;padding:16px;background:#facc15;border:none;border-radius:20px;font-family:'Ma Shan Zheng',sans-serif;font-size:20px;color:#713f12;letter-spacing:3px;cursor:pointer;box-shadow:0 8px 24px rgba(250,204,21,0.35);transition:all .2s}
+    .btn-start:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 28px rgba(250,204,21,0.45)}
+    .btn-start:active:not(:disabled){transform:scale(0.97)}
+    .btn-start:disabled{opacity:.45;cursor:not-allowed}
+    .error-box{margin-bottom:12px;padding:10px 14px;background:rgba(254,226,226,.8);border-radius:12px;font-size:13px;color:#dc2626}
+
+    /* 加载 */
+    .loading-wrap{display:flex;flex-direction:column;align-items:center;gap:20px;padding:20px 0}
+    .book-anim{animation:float 2s ease-in-out infinite}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+    .loading-card{background:rgba(255,255,255,.7);border-radius:20px;padding:24px 28px;text-align:center;backdrop-filter:blur(8px)}
+    .loading-card h3{font-family:'Ma Shan Zheng',sans-serif;font-size:20px;color:#374151;margin-bottom:8px}
+    .loading-card p{font-size:13px;color:#6b7280;line-height:1.6;font-family:'Be Vietnam Pro',sans-serif}
+    .dots{margin-top:14px}
+    .dots span{display:inline-block;width:8px;height:8px;border-radius:50%;background:#facc15;margin:0 3px;animation:bounce 1.2s ease-in-out infinite}
+    .dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+    @keyframes bounce{0%,80%,100%{transform:scale(.6)}40%{transform:scale(1)}}
+
+    /* 角色库 */
+    .char-header{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+    .back-btn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.6);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+    .back-btn:hover{background:white}
+    .char-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+    .char-card{border-radius:16px;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.5);padding:14px 10px;text-align:center;cursor:pointer;transition:all .2s;position:relative}
+    .char-card:hover{background:rgba(255,255,255,.75);transform:translateY(-2px)}
+    .char-card.sel{background:rgba(250,204,21,.25);border-color:rgba(250,204,21,.6)}
+    .char-avatar{font-size:36px;margin-bottom:6px}
+    .char-name{font-size:13px;font-weight:600;color:#374151}
+    .char-desc{font-size:10px;color:#6b7280;margin-top:3px;line-height:1.4}
+    .char-sel-badge{position:absolute;top:6px;right:6px;width:18px;height:18px;border-radius:50%;background:#facc15;display:flex;align-items:center;justify-content:center;font-size:10px;color:#713f12}
+    .char-add{border:1.5px dashed rgba(0,0,0,.2);background:rgba(255,255,255,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:100px}
+    .char-add:hover{border-color:#facc15;background:rgba(250,204,21,.1)}
+    .char-add-icon{font-size:24px;color:#9ca3af}
+    .char-add-label{font-size:11px;color:#6b7280;font-weight:600}
+    .new-char-form{background:rgba(255,255,255,.6);border-radius:16px;padding:16px;margin-bottom:14px;border:1px solid rgba(255,255,255,.7)}
+    .new-char-form .form-title{font-size:13px;font-weight:600;color:#374151;margin-bottom:12px}
+    .avatar-picker{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+    .av-opt{font-size:24px;width:40px;height:40px;border-radius:10px;border:1.5px solid rgba(0,0,0,.1);background:rgba(255,255,255,.6);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+    .av-opt.sel{border-color:#facc15;background:rgba(250,204,21,.2)}
+    .btn-save-char{width:100%;padding:10px;border-radius:12px;background:#facc15;border:none;color:#713f12;font-family:'Lexend',sans-serif;font-size:14px;font-weight:600;cursor:pointer;margin-top:8px}
+
+    /* ── 阅读器 ── */
+    .reader-fullscreen{position:fixed;inset:0;z-index:10;background:#d4c9b0;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+    .reader-topbar{z-index:20;display:flex;align-items:center;gap:16px;padding:8px 20px;background:rgba(255,255,255,0.75);backdrop-filter:blur(12px);border-radius:50px;border:1px solid rgba(255,255,255,.8)}
+    .reader-topbar .back-btn{background:transparent;border:none;font-size:18px}
+    .reader-topbar .title-text{font-family:'Ma Shan Zheng',sans-serif;font-size:16px;color:#374151}
+    .page-counter{font-size:12px;color:#6b7280;font-weight:600}
+
+    /* 书本卡片 */
+    .book-card{width:min(380px,75vw);background:#fff9e9;border-radius:4px 16px 16px 4px;box-shadow:-4px 0 8px rgba(0,0,0,.15),0 20px 60px rgba(0,0,0,.25);overflow:hidden;position:relative}
+    .book-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:6px;background:linear-gradient(90deg,#c8b89a,#e8d8c0);z-index:1}
+
+    .page-img-wrap{width:100%;aspect-ratio:4/3;overflow:hidden;position:relative}
+    .page-img-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+    .page-text-area{padding:16px 18px 14px}
+    .page-text-area p{font-size:14px;line-height:1.85;color:#374151;font-family:'Be Vietnam Pro',sans-serif}
+    .tts-badge{display:inline-block;margin-top:8px;padding:3px 10px;background:#fef08a;border-radius:20px;font-size:11px;color:#713f12}
+
+    /* 骨架屏 */
+    .skeleton{background:linear-gradient(90deg,#e8e0d0 25%,#f5ede0 50%,#e8e0d0 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
+    @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+    /* 分支选项 */
+    .branch-panel{padding:10px 18px 14px;border-top:1px solid rgba(0,0,0,.06);background:#fffdf5}
+    .branch-q{font-size:11px;color:#6b7280;margin-bottom:8px;font-family:'Lexend',sans-serif;font-weight:600}
+    .branch-opts{display:flex;flex-direction:column;gap:6px}
+    .branch-opt{padding:9px 14px;border-radius:10px;border:1.5px solid rgba(0,0,0,.1);background:rgba(255,255,255,.8);font-size:13px;color:#374151;cursor:pointer;text-align:left;transition:all .2s;font-family:'Lexend',sans-serif;width:100%}
+    .branch-opt:hover{border-color:#facc15;background:#fefce8;transform:translateX(3px)}
+    .branch-opt.sel{background:#facc15;border-color:#ca8a04;color:#713f12;font-weight:600}
+
+    /* 页码点 */
+    .pdots{display:flex;justify-content:center;gap:6px}
+    .pdot{height:5px;border-radius:3px;background:rgba(0,0,0,.2);transition:all .3s}
+    .pdot.active{width:18px;background:#735c00}.pdot:not(.active){width:5px}
+
+    /* 翻页按钮 */
+    .reader-nav{display:flex;gap:16px;z-index:20}
+    .nav-btn{width:44px;height:44px;border-radius:50%;border:none;font-size:22px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.8);color:#374151;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+    .nav-btn:hover:not(:disabled){transform:scale(1.1)}
+    .nav-btn:disabled{opacity:.25;cursor:not-allowed}
+    .btn-new{padding:8px 24px;border-radius:50px;background:rgba(255,255,255,.7);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.8);font-family:'Lexend',sans-serif;font-size:12px;font-weight:600;color:#6b7280;cursor:pointer}
+    .btn-new:hover{background:white}
+
+    /* 翻页动画 */
+    .slide-left-enter-active,.slide-left-leave-active,
+    .slide-right-enter-active,.slide-right-leave-active{transition:all .3s ease}
+    .slide-left-enter-from{transform:translateX(50px);opacity:0}
+    .slide-left-leave-to{transform:translateX(-50px);opacity:0}
+    .slide-right-enter-from{transform:translateX(-50px);opacity:0}
+    .slide-right-leave-to{transform:translateX(50px);opacity:0}
+
+    /* ── 书本容器 ── */
+    .book-3d-wrap{
+      filter:drop-shadow(0 20px 40px rgba(0,0,0,.3)) drop-shadow(-4px 4px 12px rgba(0,0,0,.2));
+    }
+    #turn-book{
+      border-radius:2px 8px 8px 2px;
+      box-shadow:-6px 0 16px rgba(0,0,0,.2),0 20px 48px rgba(0,0,0,.28);
+    }
+
+    /* ── 云朵旁白气泡（叠在图片上）── */
+    .cloud-bubble{
+      position:absolute;
+      bottom:16px;
+      left:50%;
+      transform:translateX(-50%);
+      width:80%;
+      max-width:340px;
+      background:rgba(255,255,255,.88);
+      backdrop-filter:blur(8px);
+      border-radius:20px;
+      padding:12px 16px;
+      box-shadow:0 4px 20px rgba(0,0,0,.15);
+      border:1.5px solid rgba(255,255,255,.9);
+      font-family:'Be Vietnam Pro','PingFang SC',sans-serif;
+      font-size:13px;
+      line-height:1.7;
+      color:#374151;
+      animation:cloud-breathe 3s ease-in-out infinite;
+      z-index:25;
+      text-align:center;
+    }
+    .cloud-bubble::before{display:none}
+    .cloud-bubble::after{display:none}
+    @keyframes cloud-breathe{
+      0%,100%{transform:translateX(-50%) translateY(0)}
+      50%{transform:translateX(-50%) translateY(-4px)}
+    }
+    .cloud-tts{display:inline-block;margin-top:6px;padding:2px 10px;background:#fef9c3;border-radius:20px;font-size:11px;color:#713f12;font-weight:600}
+
+    /* ── 阅读器布局 ── */
+    .reader-stage{position:relative;display:inline-block}
+
+    /* ── CompanionBear 风格角色头像 ── */
+    .bear-avatar{
+      width:52px;height:52px;
+      border-radius:50%;
+      background:#fff8ef;
+      border:2px solid rgba(255,255,255,.85);
+      box-shadow:0 4px 12px rgba(139,90,60,.18),inset 0 -2px 4px rgba(255,255,255,.6);
+      display:flex;align-items:center;justify-content:center;
+      font-size:28px;
+      animation:bear-breathe 3.5s ease-in-out infinite;
+      cursor:pointer;
+      transition:transform .2s;
+      flex-shrink:0;
+    }
+    .bear-avatar:hover{transform:scale(1.08)}
+    @keyframes bear-breathe{
+      0%,100%{transform:scale(1) translateY(0)}
+      50%{transform:scale(1.04) translateY(-3px)}
+    }
+    .bear-shadow-sm{
+      width:44px;height:8px;
+      background:rgba(0,0,0,.12);
+      border-radius:50%;
+      filter:blur(3px);
+      margin:-4px auto 0;
+    }
+
+    @keyframes flip{0%,100%{transform:scaleX(1)}50%{transform:scaleX(.15)}}
+    @keyframes twinkle{0%,100%{opacity:1}50%{opacity:.2}}
+    .bubble-enter-active,.bubble-leave-active{transition:all .3s ease}
+    .bubble-enter-from,.bubble-leave-to{opacity:0;transform:translateX(-50%) translateY(10px)}
+
+    /* 陪伴角色 */
+    .companion{position:fixed;right:24px;bottom:80px;z-index:30;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer}
+    .companion-body{width:80px;height:80px;border-radius:50%;background:#fff8ef;border:2px solid rgba(255,255,255,.85);box-shadow:0 4px 16px rgba(139,90,60,.2);display:flex;align-items:center;justify-content:center;animation:bear-breathe 3.5s ease-in-out infinite;transition:transform .2s;overflow:hidden}
+    .companion-body:hover{transform:scale(1.08)}
+    .companion-body.mood-happy{animation:happy-bounce .8s ease-out!important}
+    .companion-body.mood-wave{animation:wave-shake .4s ease-in-out 3!important;transform-origin:50% 80%}
+    @keyframes happy-bounce{0%{transform:scale(1) translateY(0)}20%{transform:scale(1.12) translateY(-14px)}40%{transform:scale(.95) translateY(0)}60%{transform:scale(1.06) translateY(-7px)}100%{transform:scale(1) translateY(0)}}
+    @keyframes wave-shake{0%,100%{transform:rotate(0)}25%{transform:rotate(-15deg)}75%{transform:rotate(15deg)}}
+    .companion-shadow{width:60px;height:8px;background:rgba(0,0,0,.12);border-radius:50%;filter:blur(3px)}
+    .companion-speech{position:absolute;bottom:calc(100% + 8px);right:0;min-width:110px;max-width:180px;padding:8px 12px;background:#fff;border:1.5px solid #f0d8c0;border-radius:14px;font-size:12px;line-height:1.5;color:#5c3a1e;box-shadow:0 4px 12px rgba(139,90,60,.12);white-space:nowrap;pointer-events:none;opacity:0;transform:translateY(8px) scale(.9);transition:all .3s cubic-bezier(.34,1.56,.64,1)}
+    .companion-speech.show{opacity:1;transform:translateY(0) scale(1)}
+    .companion-speech::after{content:'';position:absolute;bottom:-7px;right:20px;width:12px;height:12px;background:#fff;border-right:1.5px solid #f0d8c0;border-bottom:1.5px solid #f0d8c0;transform:rotate(45deg)}
+
+    /* 两侧装饰 */
+    .reader-deco{position:fixed;top:0;bottom:0;width:80px;display:flex;flex-direction:column;justify-content:center;pointer-events:none;z-index:5}
+    .reader-deco-l{left:8px}.reader-deco-r{right:8px}
+    .deco-star{position:absolute;left:50%;transform:translateX(-50%);animation:deco-float 3s ease-in-out infinite;opacity:.7}
+    @keyframes deco-float{0%,100%{transform:translateX(-50%) translateY(0) rotate(0deg)}50%{transform:translateX(-50%) translateY(-10px) rotate(15deg)}}
+
+    /* 阅读器 */
+    .reader-fullscreen{position:fixed;inset:0;z-index:10;background:#d4c9b0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+    .reader-topbar{display:flex;align-items:center;gap:16px;padding:8px 20px;background:rgba(255,255,255,.75);backdrop-filter:blur(12px);border-radius:50px;border:1px solid rgba(255,255,255,.8)}
+    .reader-topbar .back-btn{background:transparent;border:none;font-size:18px;cursor:pointer}
+    .reader-topbar .title-text{font-family:'Ma Shan Zheng',sans-serif;font-size:16px;color:#374151}
+    .page-counter{font-size:12px;color:#6b7280;font-weight:600}
+
+    /* turn.js 书本 */
+    #turn-book{box-shadow:0 20px 60px rgba(0,0,0,.3)}
+    .turn-page{background:#fff9e9;overflow:hidden;position:relative}
+    .turn-page-content{width:100%;height:100%;position:relative;overflow:hidden}
+    .turn-page-content img{width:100%;height:100%;object-fit:cover;display:block}
+    .turn-page-text{padding:12px 14px 10px;flex:1;overflow:hidden}
+    .turn-page-text p{font-size:13px;line-height:1.8;color:#374151;font-family:'Be Vietnam Pro',sans-serif}
+    .turn-tts{display:inline-block;margin-top:6px;padding:2px 8px;background:#fef08a;border-radius:20px;font-size:10px;color:#713f12}
+    .turn-branch{padding:8px 14px 10px;border-top:1px solid rgba(0,0,0,.06)}
+    .turn-branch-q{font-size:10px;color:#6b7280;margin-bottom:6px;font-weight:600}
+    .turn-opt{display:block;width:100%;padding:7px 10px;margin-bottom:5px;border-radius:8px;border:1.5px solid rgba(0,0,0,.1);background:rgba(255,255,255,.8);font-size:11px;color:#374151;cursor:pointer;text-align:left;transition:all .2s;font-family:'Lexend',sans-serif}
+    .turn-opt:hover{border-color:#facc15;background:#fefce8}
+    .turn-opt.sel{background:#facc15;border-color:#ca8a04;color:#713f12;font-weight:600}
+    .skeleton{background:linear-gradient(90deg,#e8e0d0 25%,#f5ede0 50%,#e8e0d0 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
+    @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+    /* 页码点 */
+    .pdots{display:flex;justify-content:center;gap:6px}
+    .pdot{height:5px;border-radius:3px;background:rgba(0,0,0,.2);transition:all .3s}
+    .pdot.active{width:18px;background:#735c00}.pdot:not(.active){width:5px}
+
+    /* 翻页按钮 */
+    .reader-nav{display:flex;gap:16px}
+    .nav-btn{width:44px;height:44px;border-radius:50%;border:none;font-size:22px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.8);color:#374151;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+    .nav-btn:hover:not(:disabled){transform:scale(1.1)}
+    .nav-btn:disabled{opacity:.25;cursor:not-allowed}
+    .btn-new{padding:8px 24px;border-radius:50px;background:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.8);font-family:'Lexend',sans-serif;font-size:12px;font-weight:600;color:#6b7280;cursor:pointer}
+    .btn-new:hover{background:white}
+
+    /* 历史记录 */
+    .history-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+    .history-card{border-radius:16px;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.5);overflow:hidden;cursor:pointer;transition:all .2s;position:relative}
+    .history-card:hover{background:rgba(255,255,255,.8);transform:translateY(-2px)}
+    .history-del{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.35);border:none;color:white;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:all .2s}
+    .history-del:hover{background:rgba(220,38,38,.8)}
+    .history-thumb{width:100%;aspect-ratio:4/3;background:linear-gradient(135deg,#e8f4f8,#d4e8c8);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:32px}
+    .history-thumb img{width:100%;height:100%;object-fit:cover}
+    .history-info{padding:10px 12px}
+    .history-title{font-size:13px;font-weight:600;color:#374151;margin-bottom:4px;font-family:'Ma Shan Zheng',sans-serif}
+    .history-meta{font-size:11px;color:#6b7280}
+    .history-empty{text-align:center;padding:40px 20px;color:#9ca3af;font-size:14px}
+  </style>
+</head>
+<body>
+<div id="app">
+  <div class="video-bg">
+    <video autoplay muted loop playsinline src="/bg.mp4"></video>
+  </div>
+
+  <div class="center-card" v-if="view!=='reader'">
+    <!-- 首页 -->
+    <template v-if="view==='home'">
+      <div class="panel-logo">
+        <h1><div class="logo-icon">📖</div>故事魔法师</h1>
+        <p>在这里，让你的创意变成魔法绘本</p>
+      </div>
+      <div class="char-entry" @click="view='characters'">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+          <div class="bear-avatar">{{selectedChar?selectedChar.avatar:'🧒'}}</div>
+          <div class="bear-shadow-sm"></div>
+        </div>
+        <div style="flex:1">
+          <p style="font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:.8px;font-weight:600">选择主角</p>
+          <p style="font-size:14px;color:#374151;font-weight:500;margin-top:2px">{{selectedChar?selectedChar.name:'点击更换角色'}}</p>
+        </div>
+        <span style="color:#9ca3af;font-size:18px">›</span>
+      </div>
+      <div class="field">
+        <label>今天发生了什么？</label>
+        <textarea v-model="form.event" placeholder="输入故事背景..."></textarea>
+      </div>
+      <div class="themes-grid">
+        <button v-for="t in themes" :key="t.value" class="theme-chip" :class="['chip-'+t.value,{sel:form.event===t.text}]" @click="form.event=t.text">
+          <span style="font-size:22px">{{t.icon}}</span><span>{{t.label}}</span>
+        </button>
+      </div>
+      <div class="sec-label">故事页数</div>
+      <div class="page-count-row">
+        <button v-for="n in [3,5,7]" :key="n" class="pc-btn" :class="{active:form.pageCount===n}" @click="form.pageCount=n">{{n}} 页</button>
+      </div>
+      <div class="sec-label">画风参考</div>
+      <div class="ref-grid">
+        <div v-for="r in refStyles" :key="r.id" class="ref-img" :class="{active:form.styleRef===r.id}" @click="form.styleRef=r.id">
+          <img :src="r.url"/>
+        </div>
+      </div>
+      <div v-if="error" class="error-box">{{error}}</div>
+      <button class="btn-start" @click="generate" :disabled="!form.event.trim()">✨ 开启奇遇</button>
+      <button style="width:100%;margin-top:10px;padding:10px;border-radius:14px;background:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.5);font-family:'Lexend',sans-serif;font-size:13px;color:#6b7280;cursor:pointer" @click="importSample">📖 导入示例绘本《小熊不怕打雷了》</button>
+      <button style="width:100%;margin-top:10px;padding:10px;border-radius:14px;background:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.5);font-family:'Lexend',sans-serif;font-size:13px;color:#6b7280;cursor:pointer" @click="view='import'">📂 导入本地绘本</button>
+      <button v-if="history.length" style="width:100%;margin-top:10px;padding:10px;border-radius:14px;background:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.5);font-family:'Lexend',sans-serif;font-size:13px;color:#6b7280;cursor:pointer" @click="view='history'">📚 历史绘本 ({{history.length}})</button>
+    </template>
+
+    <!-- 角色库 -->
+    <template v-if="view==='characters'">
+      <div class="char-header">
+        <button class="back-btn" @click="view='home'">←</button>
+        <span style="font-family:'Ma Shan Zheng',sans-serif;font-size:20px;color:#374151">角色库</span>
+      </div>
+      <div v-if="showNewChar" class="new-char-form">
+        <div class="form-title">创建新角色</div>
+        <div class="sec-label">选择头像</div>
+        <div class="avatar-picker">
+          <div v-for="av in avatarOptions" :key="av" class="av-opt" :class="{sel:newChar.avatar===av}" @click="newChar.avatar=av">{{av}}</div>
+        </div>
+        <div class="field"><label>名字</label><input v-model="newChar.name" placeholder="小宝" style="width:100%;padding:10px 12px;background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.7);border-radius:12px;font-family:inherit;font-size:14px;color:#374151;outline:none"/></div>
+        <div class="field"><label>描述</label><input v-model="newChar.desc" placeholder="5岁男孩，短发，圆脸" style="width:100%;padding:10px 12px;background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.7);border-radius:12px;font-family:inherit;font-size:14px;color:#374151;outline:none"/></div>
+        <button class="btn-save-char" @click="saveChar">保存角色</button>
+      </div>
+      <div class="char-grid">
+        <div v-for="c in characters" :key="c.id" class="char-card" :class="{sel:selectedChar&&selectedChar.id===c.id}" @click="selectChar(c)">
+          <div v-if="selectedChar&&selectedChar.id===c.id" class="char-sel-badge">✓</div>
+          <div class="char-avatar">{{c.avatar}}</div>
+          <div class="char-name">{{c.name}}</div>
+          <div class="char-desc">{{c.desc}}</div>
+        </div>
+        <div class="char-card char-add" @click="showNewChar=true">
+          <div class="char-add-icon">＋</div>
+          <div class="char-add-label">新建角色</div>
+        </div>
+      </div>
+      <button class="btn-start" style="font-size:16px;letter-spacing:2px" @click="view='home'">确认选择</button>
+    </template>
+
+    <!-- 导入本地绘本 -->
+    <template v-if="view==='import'">
+      <div class="char-header">
+        <button class="back-btn" @click="view='home'">←</button>
+        <span style="font-family:'Ma Shan Zheng',sans-serif;font-size:20px;color:#374151">导入本地绘本</span>
+      </div>
+      <div class="field">
+        <label>绘本标题</label>
+        <input v-model="importForm.title" placeholder="请输入绘本标题" style="width:100%;padding:10px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.4);font-size:14px;color:#374151;outline:none"/>
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="font-size:11px;font-weight:600;color:#6b7280;margin-bottom:8px;letter-spacing:.8px;text-transform:uppercase">封面图片</div>
+        <input type="file" accept="image/*" @change="e=>importForm.coverImg=e.target.files[0]" style="font-size:13px;color:#6b7280"/>
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <span style="font-size:11px;font-weight:600;color:#6b7280;letter-spacing:.8px;text-transform:uppercase">页面内容</span>
+          <button @click="importForm.pages.push({text:'',img:null,hasInteraction:false,question:'',options:''})" style="padding:4px 12px;border-radius:10px;background:#facc15;border:none;font-size:12px;font-weight:600;color:#713f12;cursor:pointer">+ 添加页</button>
+        </div>
+        <div v-for="(pg,i) in importForm.pages" :key="i" style="background:rgba(255,255,255,.5);border-radius:16px;padding:14px;margin-bottom:10px;border:1px solid rgba(255,255,255,.6)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <span style="font-size:13px;font-weight:600;color:#374151">第 {{i+1}} 页</span>
+            <button @click="importForm.pages.splice(i,1)" style="background:none;border:none;color:#9ca3af;cursor:pointer;font-size:16px">✕</button>
+          </div>
+          <input type="file" accept="image/*" @change="e=>pg.img=e.target.files[0]" style="font-size:12px;color:#6b7280;margin-bottom:8px;display:block"/>
+          <textarea v-model="pg.text" placeholder="页面文字内容..." style="width:100%;padding:8px 12px;border-radius:10px;border:1px solid rgba(0,0,0,.1);background:rgba(255,255,255,.6);font-size:13px;resize:none;height:60px;outline:none"></textarea>
+          <label style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;color:#6b7280;cursor:pointer">
+            <input type="checkbox" v-model="pg.hasInteraction"/> 添加互动选项
+          </label>
+          <div v-if="pg.hasInteraction" style="margin-top:8px">
+            <input v-model="pg.question" placeholder="互动问题..." style="width:100%;padding:6px 10px;border-radius:8px;border:1px solid rgba(0,0,0,.1);background:rgba(255,255,255,.6);font-size:12px;margin-bottom:6px;outline:none"/>
+            <textarea v-model="pg.options" placeholder="选项（每行一个）..." style="width:100%;padding:6px 10px;border-radius:8px;border:1px solid rgba(0,0,0,.1);background:rgba(255,255,255,.6);font-size:12px;resize:none;height:56px;outline:none"></textarea>
+          </div>
+        </div>
+      </div>
+      <div style="margin-bottom:16px">
+        <div style="font-size:11px;font-weight:600;color:#6b7280;margin-bottom:8px;letter-spacing:.8px;text-transform:uppercase">封底图片</div>
+        <input type="file" accept="image/*" @change="e=>importForm.backImg=e.target.files[0]" style="font-size:13px;color:#6b7280"/>
+      </div>
+      <div v-if="error" class="error-box">{{error}}</div>
+      <button class="btn-start" @click="submitImport" :disabled="!importForm.title.trim()">📖 导入绘本</button>
+    </template>
+
+    <!-- 历史记录 -->
+    <template v-if="view==='history'">
+      <div class="char-header">
+        <button class="back-btn" @click="view='home'">←</button>
+        <span style="font-family:'Ma Shan Zheng',sans-serif;font-size:20px;color:#374151">历史绘本</span>
+      </div>
+      <div v-if="!history.length" class="history-empty">还没有生成过绘本哦</div>
+      <div class="history-grid">
+        <div v-for="h in history" :key="h.id" class="history-card" @click="loadHistory(h)">
+          <button class="history-del" @click.stop="deleteHistory(h.id)">✕</button>
+          <div class="history-thumb">
+            <img v-if="h.pages[0]?.image_url" :src="h.pages[0].image_url"/>
+            <div v-else style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:32px">📖</div>
+          </div>
+          <div class="history-info">
+            <div class="history-title">{{h.book_metadata.title}}</div>
+            <div class="history-meta">{{h.pages.length}} 页 · {{h.createdAt}}</div>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- 加载 -->
+    <div v-if="view==='loading'" class="loading-wrap">
+      <dotlottie-player
+        src="https://lottie.host/4db68bbd-31f6-4cd8-84eb-189de081159a/IGmMCqhzpt.lottie"
+        background="transparent" speed="1" style="width:180px;height:180px" autoplay loop>
+      </dotlottie-player>
+      <div class="loading-card">
+        <h3>正在编写故事...</h3>
+        <p>AI 正在创作专属绘本，请稍等</p>
+        <div class="dots"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 阅读器 -->
+  <teleport to="body" v-if="view==='reader'">
+    <div class="reader-fullscreen" :style="bgImage?`background-image:url(${bgImage});background-size:cover;background-position:center`:''">
+      <div class="reader-topbar">
+        <button class="back-btn" @click="restart">←</button>
+        <span class="title-text">{{story.book_metadata.title}}</span>
+        <span class="page-counter">{{currentPage+1}} / {{story.pages.length}}</span>
+        <div style="display:flex;align-items:center;gap:6px;margin-left:12px">
+          <span style="font-size:11px;color:#6b7280">背景:</span>
+          <img v-for="p in bgPresets" :key="p.url" :src="p.url" :title="p.label"
+            @click="setBg(p.url)"
+            :style="`width:28px;height:28px;border-radius:6px;object-fit:cover;cursor:pointer;border:2px solid ${bgImage===p.url?'#f59e0b':'transparent'}`"/>
+          <label style="cursor:pointer;font-size:18px;line-height:1" title="自定义背景">🖼️
+            <input type="file" accept="image/*" style="display:none" @change="uploadBg">
+          </label>
+          <span v-if="bgImage" @click="setBg('')" style="cursor:pointer;font-size:14px;color:#9ca3af" title="清除背景">✕</span>
+        </div>
+      </div>
+
+      <!-- 书本 -->
+      <div class="reader-stage">
+        <div class="book-3d-wrap">
+          <div id="turn-book"></div>
+        </div>
+      </div>
+
+      <!-- 陪伴角色 -->
+      <div class="companion" id="companion" @click="companionClick">
+        <div class="companion-speech" :class="{show:companionSpeech}" style="position:absolute">{{companionText}}</div>
+        <div class="companion-body" :class="'mood-'+companionMood" id="companion-body">
+          <img src="/static/bear.png" style="width:92%;height:92%;object-fit:cover;pointer-events:none;transform:translateY(2px)" draggable="false"/>
+        </div>
+        <div class="companion-shadow"></div>
+      </div>
+
+      <!-- 两侧装饰 -->
+      <div class="reader-deco reader-deco-l">
+        <div class="deco-star" style="top:15%;font-size:28px;animation-delay:0s">⭐</div>
+        <div class="deco-star" style="top:40%;font-size:20px;animation-delay:.6s">✨</div>
+        <div class="deco-star" style="top:65%;font-size:24px;animation-delay:1.2s">🌙</div>
+        <div class="deco-star" style="top:82%;font-size:18px;animation-delay:.3s">💫</div>
+      </div>
+      <div class="reader-deco reader-deco-r">
+        <div class="deco-star" style="top:20%;font-size:22px;animation-delay:.4s">🌟</div>
+        <div class="deco-star" style="top:45%;font-size:26px;animation-delay:.9s">✨</div>
+        <div class="deco-star" style="top:68%;font-size:20px;animation-delay:1.5s">⭐</div>
+        <div class="deco-star" style="top:85%;font-size:16px;animation-delay:.7s">💫</div>
+      </div>
+
+      <div class="pdots">
+        <div v-for="i in story.pages.length" :key="i" class="pdot" :class="{active:currentPage===i-1}"></div>
+      </div>
+      <div class="reader-nav">
+        <button class="nav-btn" @click="flipPrev" :disabled="currentPage===0">‹</button>
+        <button class="nav-btn" @click="flipNext" :disabled="currentPage>=story.pages.length-1">›</button>
+      </div>
+      <button class="btn-new" @click="restart">重新创作一本</button>
+
+      <!-- 选项回应气泡 -->
+      <transition name="bubble">
+        <div v-if="showReplyBubble" style="position:fixed;bottom:120px;left:50%;transform:translateX(-50%);z-index:30;max-width:320px;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-radius:20px;padding:14px 18px;box-shadow:0 8px 24px rgba(0,0,0,.15);border:1px solid rgba(255,255,255,.8);display:flex;align-items:flex-start;gap:10px">
+          <span style="font-size:24px;flex-shrink:0">🌟</span>
+          <div>
+            <div style="font-size:11px;color:#6b7280;font-weight:600;margin-bottom:4px">故事将会...</div>
+            <div style="font-size:14px;color:#374151;line-height:1.6;font-family:'Be Vietnam Pro',sans-serif">{{replyText}}</div>
+          </div>
+        </div>
+      </transition>
+    </div>
+  </teleport>
+  <teleport to="body">
+    <transition name="bubble">
+      <div v-if="showChat" style="position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:100;width:min(420px,92vw);background:rgba(255,255,255,.96);backdrop-filter:blur(16px);border-radius:24px;padding:16px;box-shadow:0 8px 32px rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.8)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+          <img src="/static/bear.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover"/>
+          <span style="font-size:14px;font-weight:600;color:#374151;font-family:'Ma Shan Zheng',sans-serif">和{{story?.book_metadata?.title?.slice(0,4) || '主人公'}}聊天</span>
+          <button @click="showChat=false" style="margin-left:auto;background:none;border:none;font-size:18px;cursor:pointer;color:#9ca3af">×</button>
+        </div>
+        <div ref="chatLog" style="height:160px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:10px;padding-right:4px">
+          <div v-for="m in chatHistory" :key="m.id" :style="m.role==='user'?'align-self:flex-end':'align-self:flex-start'">
+            <div :style="m.role==='user'?'background:#f59e0b;color:#fff;border-radius:16px 16px 4px 16px':'background:#f3f4f6;color:#374151;border-radius:16px 16px 16px 4px'" style="padding:8px 12px;font-size:13px;max-width:260px;line-height:1.5">{{m.content}}</div>
+          </div>
+          <div v-if="chatLoading" style="align-self:flex-start;background:#f3f4f6;border-radius:16px;padding:8px 14px;font-size:20px">···</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <input v-model="chatInput" @keyup.enter="sendChat" placeholder="问问主人公吧～" style="flex:1;border:1.5px solid #e5e7eb;border-radius:12px;padding:8px 12px;font-size:13px;outline:none;font-family:'Be Vietnam Pro',sans-serif"/>
+          <button @click="sendChat" :disabled="chatLoading||!chatInput.trim()" style="background:#f59e0b;color:#fff;border:none;border-radius:12px;padding:8px 16px;font-size:13px;cursor:pointer;font-weight:600">发送</button>
+        </div>
+      </div>
+    </transition>
+  </teleport>
+</div>
+
+<script>
+const{createApp,ref,computed}=Vue
+createApp({
+  setup(){
+    const view=ref('home')
+    const form=ref({event:'',childName:'小宝',childAge:5,artStyle:'watercolor',styleRef:1,pageCount:5})
+    const importForm=ref({title:'',coverImg:null,backImg:null,pages:[{text:'',img:null,hasInteraction:false,question:'',options:''}]})
+    const story=ref(null),error=ref(''),currentPage=ref(0),selectedOptions=ref({})
+    const slideDir=ref('slide-left')
+
+    const refStyles=[
+      {id:1,url:'/ref/参考图1.jpg'},{id:2,url:'/ref/参考图2.jpg'},
+      {id:3,url:'/ref/参考图3.jpg'},{id:4,url:'/ref/参考图4.jpg'},
+      {id:5,url:'/ref/参考图5.jpg'},
+    ]
+    const page=computed(()=>story.value?.pages[currentPage.value])
+    // flipbook-vue 需要图片URL数组，null=封面单页
+    const flipPages=computed(()=>{
+      if(!story.value)return[]
+      return [null,...story.value.pages.map(p=>p.image_url||null)]
+    })
+
+    // 历史记录
+    const history=ref([])
+    async function loadHistoryList(){
+      const res=await fetch('/api/stories')
+      const data=await res.json()
+      // 加载每个故事完整数据
+      const full=await Promise.all(data.stories.map(s=>fetch(`/api/stories/${s.story_id}`).then(r=>r.json())))
+      history.value=full.map(s=>({...s,id:s.story_id,createdAt:new Date(parseInt(s.story_id)*1000).toLocaleDateString('zh-CN')}))
+    }
+    loadHistoryList()
+    function saveHistory(){}
+    function updateHistory(s){
+      const idx=history.value.findIndex(h=>h.story_id===s.story_id)
+      if(idx>=0) history.value[idx]={...history.value[idx],pages:JSON.parse(JSON.stringify(s.pages))}
+    }
+    function loadHistory(h){story.value=h;currentPage.value=0;view.value='reader';setTimeout(initTurnBook,100);setTimeout(initCompanionEyes,200)}
+    async function deleteHistory(id){
+      await fetch(`/api/stories/${id}`,{method:'DELETE'})
+      history.value=history.value.filter(h=>h.id!==id)
+    }
+
+    const DEFAULT_CHARS=[
+      {id:1,avatar:'🧒',name:'小明',desc:'5岁男孩，短发，圆脸，黄色卫衣'},
+      {id:2,avatar:'👧',name:'小花',desc:'4岁女孩，双马尾，粉色裙子'},
+      {id:3,avatar:'🐻',name:'小熊',desc:'可爱的棕色小熊，戴红色蝴蝶结'},
+    ]
+    const characters=ref(JSON.parse(localStorage.getItem('sb_chars')||'null')||DEFAULT_CHARS)
+    const selectedChar=ref(JSON.parse(localStorage.getItem('sb_sel_char')||'null'))
+    const showNewChar=ref(false)
+    const avatarOptions=['🧒','👧','👦','🐻','🐰','🦊','🐱','🐶','🦁','🐼']
+    const newChar=ref({avatar:'🧒',name:'',desc:''})
+
+    function selectChar(c){selectedChar.value=c;localStorage.setItem('sb_sel_char',JSON.stringify(c))}
+    function saveChar(){
+      if(!newChar.value.name.trim())return
+      const c={id:Date.now(),...newChar.value}
+      characters.value.push(c)
+      localStorage.setItem('sb_chars',JSON.stringify(characters.value))
+      selectChar(c);showNewChar.value=false
+      newChar.value={avatar:'🧒',name:'',desc:''}
+    }
+
+    const themes=[
+      {value:'brave',label:'勇敢尝试',icon:'💪',text:'今天宝宝勇敢尝试了一件新事情，虽然有点害怕，但还是做到了！'},
+      {value:'bath', label:'快乐洗澡',icon:'🛁',text:'今天宝宝自己洗澡，把浴室弄得水花四溅，玩得超开心！'},
+      {value:'dream',label:'梦幻冒险',icon:'🌙',text:'今天宝宝做了一个奇妙的梦，梦见自己去了一个神奇的地方。'},
+      {value:'share',label:'学会分享',icon:'🤝',text:'今天宝宝把自己最喜欢的玩具分享给了小朋友，大家都很开心！'},
+    ]
+    const styles=[]
+
+    async function importSample(){
+      view.value='loading';error.value=''
+      try{
+        const res=await fetch('/api/import/thunder_bear')
+        if(!res.ok)throw new Error('导入失败')
+        story.value=await res.json()
+        loadHistoryList()
+        view.value='reader'
+        await Vue.nextTick()
+        setTimeout(initTurnBook,100)
+        setTimeout(initCompanionEyes,200)
+      }catch(e){error.value=e.message;view.value='home'}
+    }
+
+    async function submitImport(){
+      view.value='loading';error.value=''
+      try{
+        const fd=new FormData()
+        fd.append('title',importForm.value.title)
+        const pagesData=importForm.value.pages.map(p=>({
+          text:p.text,
+          interaction_question:p.hasInteraction?p.question:'',
+          interaction_options:p.hasInteraction?p.options:''
+        }))
+        fd.append('pages_json',JSON.stringify(pagesData))
+        if(importForm.value.coverImg) fd.append('images',importForm.value.coverImg)
+        importForm.value.pages.forEach(p=>{if(p.img)fd.append('images',p.img)})
+        if(importForm.value.backImg) fd.append('images',importForm.value.backImg)
+        const res=await fetch('/api/import/custom',{method:'POST',body:fd})
+        if(!res.ok)throw new Error('导入失败')
+        story.value=await res.json()
+        loadHistoryList()
+        view.value='reader'
+        await Vue.nextTick()
+        setTimeout(initTurnBook,100)
+        setTimeout(initCompanionEyes,200)
+      }catch(e){error.value=e.message;view.value='import'}
+    }
+
+    async function generate(){
+      view.value='loading';error.value=''
+      try{
+        const res=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({
+            event:form.value.event,
+            child_name:selectedChar.value?.name||form.value.childName,
+            child_age:form.value.childAge,
+            art_style:form.value.artStyle,
+            visual_anchors:selectedChar.value?.desc||'',
+            style_ref_url:`http://localhost:8001/ref/参考图${form.value.styleRef}.jpg`,
+            page_count:form.value.pageCount
+          })})
+        if(!res.ok)throw new Error('生成失败，请重试')
+        story.value=await res.json();currentPage.value=0;view.value='reader'
+        loadHistoryList()
+        setTimeout(initTurnBook, 100)
+        setTimeout(initCompanionEyes, 200)
+        if(window.confetti) confetti({particleCount:120,spread:80,origin:{y:0.6},colors:['#facc15','#f4a261','#a78bfa','#34d399']})
+        if(story.value.story_id) pollImages(story.value.story_id)
+      }catch(e){error.value=e.message;view.value='home'}
+    }
+
+    function pollImages(storyId){
+      let tries=0
+      const timer=setInterval(async()=>{
+        tries++;if(!story.value){clearInterval(timer);return}
+        const r=await fetch(`/api/images/${storyId}`)
+        const{images}=await r.json()
+        let updated=false
+        images.forEach((url,i)=>{
+          if(url&&story.value?.pages[i]&&!story.value.pages[i].image_url){
+            story.value.pages[i].image_url=url
+            updated=true
+          }
+        })
+        if(updated){ updateTurnImages(); if(images.filter(Boolean).length===images.length) initTurnBook() }
+        const done=images.every(u=>u)
+        if(done||tries>40){
+          clearInterval(timer)
+          updateHistory(story.value)
+          if(!done) images.forEach((url,i)=>{
+            if(!url&&story.value?.pages[i]) story.value.pages[i].image_failed=true
+          })
+        }
+      },5000)
+    }
+
+    function buildPageHTML(p, idx){
+      // 封面
+      if(p.type==='cover'){
+        const bg = p.image_url
+          ? `background-image:url(${p.image_url});background-size:cover;background-position:center`
+          : 'background:linear-gradient(135deg,#fef9c3,#fde68a)'
+        return `<div class="turn-page-content" style="${bg};display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0;position:relative">
+          <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0) 40%,rgba(0,0,0,0.45) 100%)"></div>
+          <div class="cover-eyes" style="position:absolute;top:38%;left:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:2">
+            <svg width="80" height="90" viewBox="0 0 80 90" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="22" cy="22" rx="9" ry="18" fill="#f9d0d0" transform="rotate(-15 22 22)"/>
+              <ellipse cx="22" cy="22" rx="5" ry="12" fill="#f4a0a0" transform="rotate(-15 22 22)"/>
+              <ellipse cx="58" cy="22" rx="9" ry="18" fill="#f9d0d0" transform="rotate(15 58 22)"/>
+              <ellipse cx="58" cy="22" rx="5" ry="12" fill="#f4a0a0" transform="rotate(15 58 22)"/>
+              <circle cx="40" cy="52" r="30" fill="#fff5f5"/>
+              <circle cx="28" cy="46" r="8" fill="white" filter="drop-shadow(0 1px 2px rgba(0,0,0,.2))"/>
+              <circle cx="52" cy="46" r="8" fill="white" filter="drop-shadow(0 1px 2px rgba(0,0,0,.2))"/>
+              <circle class="pupil" cx="28" cy="46" r="4" fill="#3b2a1a"/>
+              <circle class="pupil" cx="52" cy="46" r="4" fill="#3b2a1a"/>
+              <circle cx="30" cy="44" r="1.5" fill="white"/>
+              <circle cx="54" cy="44" r="1.5" fill="white"/>
+              <ellipse cx="40" cy="58" rx="4" ry="3" fill="#f4a0a0"/>
+              <path d="M36 62 Q40 66 44 62" stroke="#d47070" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div style="position:relative;z-index:4;width:100%;padding:24px;text-align:center">
+            <div style="font-family:'Ma Shan Zheng',sans-serif;font-size:24px;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.4);margin-bottom:6px">${p.text}</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.75);letter-spacing:2px">✦ 专属绘本 ✦</div>
+            ${!p.image_url ? `<button onclick="window._regenImg('${story.value?.story_id}',${idx},this)" style="margin-top:10px;padding:6px 16px;background:rgba(255,255,255,.3);color:white;border:1px solid rgba(255,255,255,.5);border-radius:20px;cursor:pointer;font-size:12px;backdrop-filter:blur(4px)">✨ 生成封面图</button>` : ''}
+          </div>
+        </div>`
+      }
+      // 封底
+      if(p.type==='back'){
+        const bg = p.image_url ? `background-image:url(${p.image_url});background-size:cover;background-position:center` : 'background:linear-gradient(135deg,#e0f2fe,#bae6fd)'
+        return `<div class="turn-page-content" style="${bg};display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px">
+          <div style="font-size:40px;margin-bottom:12px">🌟</div>
+          <div style="font-family:'Ma Shan Zheng',sans-serif;font-size:20px;color:#374151;background:rgba(255,255,255,.75);padding:12px 20px;border-radius:14px">${p.text}</div>
+          ${!p.image_url ? `<button onclick="window._regenImg('${story.value?.story_id}',${idx},this)" style="margin-top:12px;padding:6px 16px;background:#c8a96e;color:white;border:none;border-radius:20px;cursor:pointer;font-size:12px">✨ 生成封底图</button>` : ''}
+          <button onclick="window._openChat()" style="margin-top:16px;padding:10px 24px;background:#f59e0b;color:white;border:none;border-radius:20px;cursor:pointer;font-size:14px;font-weight:600;box-shadow:0 4px 12px rgba(245,158,11,.4)">💬 和主人公聊天</button>
+        </div>`
+      }
+      // 普通页
+      const failBtn = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f5f0e8;flex-direction:column;gap:8px"><div style="color:#999;font-size:13px">图片生成失败</div><button onclick="window._regenImg('${story.value?.story_id}',${idx},this)" style="padding:6px 16px;background:#c8a96e;color:white;border:none;border-radius:20px;cursor:pointer;font-size:13px">重新生成</button></div>`
+      const imgH = p.image_failed
+        ? failBtn
+        : p.image_url
+        ? `<img src="${p.image_url}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" style="width:100%;height:100%;object-fit:cover;display:block"/><div style="width:100%;height:100%;display:none;align-items:center;justify-content:center;background:#f5f0e8;flex-direction:column;gap:8px"><div style="color:#999;font-size:13px">图片加载失败</div><button onclick="window._regenImg('${story.value?.story_id}',${idx},this)" style="padding:6px 16px;background:#c8a96e;color:white;border:none;border-radius:20px;cursor:pointer;font-size:13px">重新生成</button></div>`
+        : `<div class="skeleton" style="width:100%;height:100%"></div>`
+      const branch = p.interaction ? `
+        <div class="turn-branch" style="flex-shrink:0;background:rgba(255,255,255,.95);border-top:1px solid rgba(0,0,0,.06);padding:8px 12px 10px">
+          <div class="turn-branch-q">${p.interaction.question}</div>
+          ${p.interaction.options.map((o,i)=>`<button class="turn-opt" data-page="${idx}" data-opt="${i}" onclick="window._selectOpt(${idx},${i},this)">${typeof o==='string'?o:o.label}</button>`).join('')}
+        </div>` : ''
+      const bubble = p.text ? `<div class="cloud-bubble">${p.text}${p.tts_cue?`<div class="cloud-tts">🎙 ${p.tts_cue}</div>`:''}</div>` : ''
+      return `<div class="turn-page-content" style="display:flex;flex-direction:column"><div style="position:relative;flex:1;overflow:hidden">${imgH}${bubble}</div>${branch}</div>`
+    }
+
+    function initTurnBook(){
+      const el = document.getElementById('turn-book')
+      if(!el || !story.value) return
+      const pageW = Math.min(window.innerWidth * 0.42, 440)
+      const pageH = Math.round(pageW * 1.45)
+      const totalW = pageW * 2  // 双页宽度
+      el.innerHTML = ''
+      try{ $(el).turn('destroy') }catch(e){}
+      el.style.cssText = `width:${totalW}px;height:${pageH}px;background:url('/static/书皮.png') left center/cover no-repeat`
+      const pages = story.value.pages
+      // turn.js covers:true requires page count divisible by 4
+      const padCount = (4 - (pages.length % 4)) % 4
+      pages.forEach((p, i) => {
+        const div = document.createElement('div')
+        div.className = 'turn-page'
+        div.dataset.pageIdx = i
+        div.innerHTML = buildPageHTML(p, i)
+        el.appendChild(div)
+      })
+      for(let p=0;p<padCount;p++){
+        const pad = document.createElement('div')
+        pad.className = 'turn-page'
+        pad.innerHTML = '<div class="turn-page-content" style="background:#fff9e9"></div>'
+        el.appendChild(pad)
+      }
+      $(el).turn({
+        display: 'double', width: totalW, height: pageH,
+        duration: 800, gradients: true, autoCenter: true, covers: true,
+        when: { turned: (e, page) => { currentPage.value = Math.max(0, Math.floor((page-1)/2)) } }
+      })
+      // 全局选项点击处理
+      window._regenImg = async (storyId, pageIdx, btn) => {
+        btn.textContent = '生成中...'
+        btn.disabled = true
+        await fetch(`/api/regenerate/${storyId}/${pageIdx}`, {method:'POST'})
+        // 轮询直到图片就绪
+        let tries = 0
+        const timer = setInterval(async () => {
+          tries++
+          const r = await fetch(`/api/images/${storyId}`)
+          const {images} = await r.json()
+          const url = images[pageIdx]
+          if (url || tries > 40) {
+            clearInterval(timer)
+            if (url && story.value?.pages[pageIdx]) {
+              story.value.pages[pageIdx].image_url = url
+              story.value.pages[pageIdx].image_failed = false
+              updateTurnImages()
+            }
+          }
+        }, 5000)
+      }
+      window._selectOpt = (pageIdx, optIdx, btn) => {
+        selectedOptions.value = {...selectedOptions.value, [pageIdx]: optIdx}
+        const branch = btn.closest('.turn-branch')
+        branch.querySelectorAll('.turn-opt').forEach((b,i) => { b.classList.toggle('sel', i===optIdx); b.disabled=true })
+        const p = story.value?.pages[pageIdx]
+        if(!p?.interaction) return
+        const opt = p.interaction.options[optIdx]
+        const pivot = typeof opt==='string' ? opt : (opt.plot_pivot || opt.label)
+        if(window._showReply) window._showReply(pivot)
+        if(window._expandBranch) window._expandBranch(pivot)
+      }
+      // 眼神跟随鼠标
+      if(window._eyeCleanup) window._eyeCleanup()
+      // SVG瞳孔基准位置
+      const pupilBases = [{cx:28,cy:46},{cx:52,cy:46}]
+      function onMouseMove(e){
+        const pupils = document.querySelectorAll('#turn-book .pupil')
+        if(pupils.length < 2) return
+        pupils.forEach((pupil, idx) => {
+          const svg = pupil.closest('svg')
+          if(!svg) return
+          const r = svg.getBoundingClientRect()
+          const scaleX = r.width / 80, scaleY = r.height / 90
+          const base = pupilBases[idx]
+          const cx = r.left + base.cx * scaleX
+          const cy = r.top + base.cy * scaleY
+          const angle = Math.atan2(e.clientY - cy, e.clientX - cx)
+          const dist = Math.min(2.5, Math.hypot(e.clientX-cx, e.clientY-cy) / 30)
+          pupil.setAttribute('cx', base.cx + Math.cos(angle)*dist)
+          pupil.setAttribute('cy', base.cy + Math.sin(angle)*dist)
+        })
+      }
+      document.addEventListener('mousemove', onMouseMove)
+      window._eyeCleanup = () => document.removeEventListener('mousemove', onMouseMove)
+    }
+
+    function updateTurnImages(){
+      const el = document.getElementById('turn-book')
+      if(!el) return
+      story.value.pages.forEach((p, i) => {
+        if(!p.image_url) return
+        const pageEl = el.querySelector(`[data-page-idx="${i}"]`)
+        if(!pageEl) return
+        const content = pageEl.querySelector('.turn-page-content')
+        if(!content) return
+        if(p.type==='cover'||p.type==='back'){
+          content.style.backgroundImage = `url(${p.image_url})`
+          content.style.backgroundSize = 'cover'
+          content.style.backgroundPosition = 'center'
+          return
+        }
+        const imgWrap = content.querySelector('div[style*="position:relative"]') || content.querySelector('div')
+        if(!imgWrap) return
+        const skel = imgWrap.querySelector('.skeleton')
+        if(skel){
+          const img = document.createElement('img')
+          img.src = p.image_url
+          img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block'
+          skel.replaceWith(img)
+        } else {
+          const img = imgWrap.querySelector('img')
+          if(img && img.src !== location.origin + p.image_url) img.src = p.image_url
+        }
+      })
+    }
+
+    const replyText = ref('')
+    const showReplyBubble = ref(false)
+    const bgImage = ref('/static/bg_grass.png')
+    const bgPresets = [
+      {label:'草坪',url:'/static/bg_grass.png'},
+      {label:'桌面',url:'/static/bg_desk.png'},
+      {label:'被单',url:'/static/bg_sheet.png'},
+    ]
+    function setBg(url){ bgImage.value = url }
+    function uploadBg(e){
+      const f = e.target.files[0]
+      if(f) bgImage.value = URL.createObjectURL(f)
+    }
+    function showReply(pivot){
+      replyText.value = pivot
+      showReplyBubble.value = true
+      setTimeout(()=>{ showReplyBubble.value = false }, 3500)
+    }
+    window._showReply = showReply
+
+    function flipPrev(){ $('#turn-book').turn('previous') }
+    function flipNext(){ $('#turn-book').turn('next') }
+    function restart(){
+      try{ $('#turn-book').turn('destroy') }catch(e){}
+      if(window._eyeCleanup){ window._eyeCleanup(); window._eyeCleanup=null }
+      if(window._companionEyeCleanup){ window._companionEyeCleanup(); window._companionEyeCleanup=null }
+      story.value=null;currentPage.value=0;selectedOptions.value={};view.value='home'
+    }
+
+    const companionMood=ref('idle'),companionText=ref(''),companionSpeech=ref(false)
+    let companionTimer=null
+    const companionMessages=['一起读故事吧！📚','今天读哪一本呢？','我陪着你哦～','好精彩的故事！','继续翻页吧！']
+    function companionSay(text){
+      companionText.value=text;companionSpeech.value=true
+      clearTimeout(companionTimer)
+      companionTimer=setTimeout(()=>companionSpeech.value=false,2500)
+    }
+    function companionClick(){
+      companionMood.value='happy'
+      companionSay(companionMessages[Math.floor(Math.random()*companionMessages.length)])
+      setTimeout(()=>companionMood.value='idle',900)
+    }
+    function initCompanionEyes(){
+      if(window._companionEyeCleanup) window._companionEyeCleanup()
+      const bases=[{id:'cpupil-l',cx:22,cy:34},{id:'cpupil-r',cx:42,cy:34}]
+      function onMove(e){
+        bases.forEach(({id,cx,cy})=>{
+          const el=document.getElementById(id);if(!el)return
+          const svg=el.closest('svg');if(!svg)return
+          const r=svg.getBoundingClientRect()
+          const scaleX=r.width/64,scaleY=r.height/64
+          const bcx=r.left+cx*scaleX,bcy=r.top+cy*scaleY
+          const angle=Math.atan2(e.clientY-bcy,e.clientX-bcx)
+          const dist=Math.min(2,Math.hypot(e.clientX-bcx,e.clientY-bcy)/40)
+          el.setAttribute('cx',cx+Math.cos(angle)*dist)
+          el.setAttribute('cy',cy+Math.sin(angle)*dist)
+        })
+      }
+      document.addEventListener('mousemove',onMove)
+      window._companionEyeCleanup=()=>document.removeEventListener('mousemove',onMove)
+      // 随机说话
+      const autoTimer=setInterval(()=>{
+        if(!companionSpeech.value&&Math.random()<0.3)
+          companionSay(companionMessages[Math.floor(Math.random()*companionMessages.length)])
+      },18000)
+      const prevCleanup=window._companionEyeCleanup
+      window._companionEyeCleanup=()=>{prevCleanup();clearInterval(autoTimer)}
+    }
+
+    // 对话功能
+    const showChat = ref(false)
+    const chatInput = ref('')
+    const chatHistory = ref([])
+    const chatLoading = ref(false)
+    const chatLog = ref(null)
+    let chatMsgId = 0
+
+    async function sendChat(){
+      const msg = chatInput.value.trim()
+      if(!msg || chatLoading.value) return
+      chatInput.value = ''
+      chatHistory.value.push({id:chatMsgId++, role:'user', content:msg})
+      chatLoading.value = true
+      await Vue.nextTick(); if(chatLog.value) chatLog.value.scrollTop = chatLog.value.scrollHeight
+      try{
+        const res = await fetch('/api/chat', {method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({
+            story_id: story.value.story_id,
+            character_name: story.value.book_metadata?.child_name || story.value.book_metadata?.title?.match(/[\u4e00-\u9fa5]{1,3}/)?.[0] || '主人公',
+            message: msg,
+            history: chatHistory.value.slice(-6).map(h=>({role:h.role,content:h.content}))
+          })})
+        const data = await res.json()
+        chatHistory.value.push({id:chatMsgId++, role:'assistant', content:data.reply})
+      }finally{
+        chatLoading.value = false
+        await Vue.nextTick(); if(chatLog.value) chatLog.value.scrollTop = chatLog.value.scrollHeight
+      }
+    }
+
+    // 选项分支扩展剧情
+    async function expandBranch(pivot){
+      if(!story.value?.story_id) return
+      companionSay('正在续写故事...')
+      const res = await fetch('/api/branch', {method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          story_id: story.value.story_id,
+          plot_pivot: pivot,
+          visual_anchors: story.value.book_metadata?.visual_anchors || '',
+          art_style: 'watercolor'
+        })})
+      const data = await res.json()
+      // 在封底前插入新页
+      const backIdx = story.value.pages.findIndex(p=>p.type==='back')
+      const insertAt = backIdx >= 0 ? backIdx : story.value.pages.length
+      story.value.pages.splice(insertAt, 0, ...data.pages)
+      await Vue.nextTick()
+      try{ $('#turn-book').turn('destroy') }catch(e){}
+      setTimeout(initTurnBook, 100)
+      companionSay('故事续写好啦！')
+    }
+    window._expandBranch = expandBranch
+    window._openChat = () => { showChat.value = true }
+
+    return{view,form,themes,styles,refStyles,story,error,currentPage,selectedOptions,page,generate,restart,flipPrev,flipNext,
+      history,loadHistory,deleteHistory,
+      characters,selectedChar,showNewChar,avatarOptions,newChar,selectChar,saveChar,
+      replyText,showReplyBubble,importSample,importForm,submitImport,bgImage,bgPresets,setBg,uploadBg,
+      showChat,chatInput,chatHistory,chatLoading,chatLog,sendChat,
+      companionMood,companionText,companionSpeech,companionClick,initCompanionEyes}
+  }
+}).mount('#app')
+</script>
+</body>
+</html>
