@@ -519,6 +519,23 @@
           </div>
         </div>
       </transition>
+      <!-- 续写弹窗 -->
+      <div v-if="showBranch" style="position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center" @click.self="showBranch=false">
+        <div style="width:min(480px,92vw);max-height:80vh;overflow-y:auto;background:rgba(255,255,255,.97);backdrop-filter:blur(20px);border-radius:24px;padding:24px;box-shadow:0 16px 48px rgba(0,0,0,.2)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+            <span style="font-family:'Ma Shan Zheng',sans-serif;font-size:18px;color:#374151">✨ 故事续写</span>
+            <button @click="showBranch=false" style="background:none;border:none;font-size:20px;cursor:pointer;color:#9ca3af">×</button>
+          </div>
+          <div v-for="(p,i) in branchPages" :key="i" style="margin-bottom:16px;padding:14px;background:rgba(255,249,233,.8);border-radius:16px;border:1px solid rgba(250,204,21,.3)">
+            <div style="font-size:11px;font-weight:600;color:#6b7280;margin-bottom:6px">第 {{i+1}} 页</div>
+            <p style="font-size:14px;line-height:1.8;color:#374151;font-family:'Be Vietnam Pro',sans-serif">{{p.text}}</p>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:8px">
+            <button @click="showBranch=false" style="flex:1;padding:12px;border-radius:14px;background:rgba(0,0,0,.06);border:none;font-family:'Lexend',sans-serif;font-size:14px;color:#6b7280;cursor:pointer">取消</button>
+            <button @click="confirmBranch" style="flex:2;padding:12px;border-radius:14px;background:#facc15;border:none;font-family:'Ma Shan Zheng',sans-serif;font-size:16px;color:#713f12;cursor:pointer">加入绘本</button>
+          </div>
+        </div>
+      </div>
     </div>
   </teleport>
   <teleport to="body">
@@ -547,6 +564,7 @@
 <script>
 const{createApp,ref,computed}=Vue
 createApp({
+  compilerOptions:{isCustomElement:tag=>tag.startsWith('dotlottie-')},
   setup(){
     const view=ref('home')
     const form=ref({event:'',childName:'小宝',childAge:5,artStyle:'watercolor',styleRef:1,pageCount:5})
@@ -581,7 +599,15 @@ createApp({
       const idx=history.value.findIndex(h=>h.story_id===s.story_id)
       if(idx>=0) history.value[idx]={...history.value[idx],pages:JSON.parse(JSON.stringify(s.pages))}
     }
-    function loadHistory(h){story.value=h;currentPage.value=0;view.value='reader';setTimeout(initTurnBook,100);setTimeout(initCompanionEyes,200)}
+    function loadHistory(h){
+      story.value=h;currentPage.value=0;view.value='reader';setTimeout(initTurnBook,100);setTimeout(initCompanionEyes,200)
+      // 自动补充生成缺失图片
+      const missingIdxs=h.pages.map((p,i)=>(!p.image_url||p.image_url==='/placeholder.svg')?i:-1).filter(i=>i>=0)
+      if(missingIdxs.length&&h.story_id){
+        missingIdxs.forEach(i=>fetch(`/api/regenerate/${h.story_id}/${i}`,{method:'POST'}))
+        pollImages(h.story_id)
+      }
+    }
     async function deleteHistory(id){
       await fetch(`/api/stories/${id}`,{method:'DELETE'})
       history.value=history.value.filter(h=>h.id!==id)
@@ -691,7 +717,7 @@ createApp({
             updated=true
           }
         })
-        if(updated){ updateTurnImages(); if(images.filter(Boolean).length===images.length) initTurnBook() }
+        if(updated){ updateTurnImages() }
         const done=images.every(u=>u)
         if(done||tries>40){
           clearInterval(timer)
@@ -764,15 +790,16 @@ createApp({
     function initTurnBook(){
       const el = document.getElementById('turn-book')
       if(!el || !story.value) return
+      currentPage.value = 0
       const pageW = Math.min(window.innerWidth * 0.42, 440)
       const pageH = Math.round(pageW * 1.45)
       const totalW = pageW * 2  // 双页宽度
-      el.innerHTML = ''
       try{ $(el).turn('destroy') }catch(e){}
+      el.innerHTML = ''
       el.style.cssText = `width:${totalW}px;height:${pageH}px;background:url('/static/书皮.png') left center/cover no-repeat`
       const pages = story.value.pages
-      // turn.js covers:true requires page count divisible by 4
-      const padCount = (4 - (pages.length % 4)) % 4
+      // turn.js double display requires even page count, minimum 4
+      const padCount = Math.max(0, pages.length < 4 ? 4 - pages.length : pages.length % 2)
       pages.forEach((p, i) => {
         const div = document.createElement('div')
         div.className = 'turn-page'
@@ -783,14 +810,18 @@ createApp({
       for(let p=0;p<padCount;p++){
         const pad = document.createElement('div')
         pad.className = 'turn-page'
-        pad.innerHTML = '<div class="turn-page-content" style="background:#fff9e9"></div>'
+        pad.innerHTML = '<div class="turn-page-content" style="background:transparent"></div>'
         el.appendChild(pad)
       }
-      $(el).turn({
-        display: 'double', width: totalW, height: pageH,
-        duration: 800, gradients: true, autoCenter: true, covers: true,
-        when: { turned: (e, page) => { currentPage.value = Math.max(0, Math.floor((page-1)/2)) } }
-      })
+      try{
+        $(el).turn({
+          display: 'double', width: totalW, height: pageH,
+          duration: 800, gradients: true, autoCenter: true,
+          when: { turned: (e, page) => { currentPage.value = Math.max(0, Math.floor((page-1)/2)) } }
+        })
+      }catch(e){
+        console.warn('[turn.js] init failed, fallback mode', e)
+      }
       // 全局选项点击处理
       window._regenImg = async (storyId, pageIdx, btn) => {
         btn.textContent = '生成中...'
@@ -850,37 +881,43 @@ createApp({
     }
 
     function updateTurnImages(){
-      const el = document.getElementById('turn-book')
-      if(!el) return
-      story.value.pages.forEach((p, i) => {
-        if(!p.image_url) return
-        const pageEl = el.querySelector(`[data-page-idx="${i}"]`)
-        if(!pageEl) return
-        const content = pageEl.querySelector('.turn-page-content')
-        if(!content) return
-        if(p.type==='cover'||p.type==='back'){
-          content.style.backgroundImage = `url(${p.image_url})`
-          content.style.backgroundSize = 'cover'
-          content.style.backgroundPosition = 'center'
-          return
-        }
-        const imgWrap = content.querySelector('div[style*="position:relative"]') || content.querySelector('div')
-        if(!imgWrap) return
-        const skel = imgWrap.querySelector('.skeleton')
-        if(skel){
-          const img = document.createElement('img')
-          img.src = p.image_url
-          img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block'
-          skel.replaceWith(img)
-        } else {
-          const img = imgWrap.querySelector('img')
-          if(img && img.src !== location.origin + p.image_url) img.src = p.image_url
-        }
-      })
+      try{
+        const el = document.getElementById('turn-book')
+        if(!el) return
+        story.value.pages.forEach((p, i) => {
+          if(!p.image_url) return
+          try{
+            const pageEl = el.querySelector(`[data-page-idx="${i}"]`)
+            if(!pageEl) return
+            const content = pageEl.querySelector('.turn-page-content')
+            if(!content) return
+            if(p.type==='cover'||p.type==='back'){
+              content.style.backgroundImage = `url(${p.image_url})`
+              content.style.backgroundSize = 'cover'
+              content.style.backgroundPosition = 'center'
+              return
+            }
+            const imgWrap = content.querySelector('div[style*="position:relative"]') || content.querySelector('div')
+            if(!imgWrap) return
+            const skel = imgWrap.querySelector('.skeleton')
+            if(skel){
+              const img = document.createElement('img')
+              img.src = p.image_url
+              img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block'
+              skel.replaceWith(img)
+            } else {
+              const img = imgWrap.querySelector('img')
+              if(img && img.src !== location.origin + p.image_url) img.src = p.image_url
+            }
+          }catch(e){}
+        })
+      }catch(e){}
     }
 
     const replyText = ref('')
     const showReplyBubble = ref(false)
+    const showBranch = ref(false)
+    const branchPages = ref([])
     const bgImage = ref('/static/bg_grass.png')
     const bgPresets = [
       {label:'草坪',url:'/static/bg_grass.png'},
@@ -979,26 +1016,34 @@ createApp({
       }
     }
 
-    // 选项分支扩展剧情
     async function expandBranch(pivot){
       if(!story.value?.story_id) return
       companionSay('正在续写故事...')
-      const res = await fetch('/api/branch', {method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({
-          story_id: story.value.story_id,
-          plot_pivot: pivot,
-          visual_anchors: story.value.book_metadata?.visual_anchors || '',
-          art_style: 'watercolor'
-        })})
-      const data = await res.json()
-      // 在封底前插入新页
+      try{
+        const res = await fetch('/api/branch', {method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({
+            story_id: story.value.story_id,
+            plot_pivot: pivot,
+            visual_anchors: story.value.book_metadata?.visual_anchors || '',
+            art_style: 'watercolor'
+          })})
+        if(!res.ok) throw new Error(`HTTP ${res.status}`)
+        const data = await res.json()
+        branchPages.value = data.pages
+        showBranch.value = true
+        companionSay('故事续写好啦！')
+      }catch(e){
+        console.error('[expandBranch]', e)
+        companionSay('续写遇到问题，请重试～')
+      }
+    }
+    function confirmBranch(){
       const backIdx = story.value.pages.findIndex(p=>p.type==='back')
       const insertAt = backIdx >= 0 ? backIdx : story.value.pages.length
-      story.value.pages.splice(insertAt, 0, ...data.pages)
-      await Vue.nextTick()
-      try{ $('#turn-book').turn('destroy') }catch(e){}
-      setTimeout(initTurnBook, 100)
-      companionSay('故事续写好啦！')
+      story.value.pages.splice(insertAt, 0, ...branchPages.value)
+      showBranch.value = false
+      branchPages.value = []
+      Vue.nextTick(()=>{ try{$('#turn-book').turn('destroy')}catch(e){} ; setTimeout(initTurnBook,100) })
     }
     window._expandBranch = expandBranch
     window._openChat = () => { showChat.value = true }
@@ -1007,6 +1052,7 @@ createApp({
       history,loadHistory,deleteHistory,
       characters,selectedChar,showNewChar,avatarOptions,newChar,selectChar,saveChar,
       replyText,showReplyBubble,importSample,importForm,submitImport,bgImage,bgPresets,setBg,uploadBg,
+      showBranch,branchPages,confirmBranch,
       showChat,chatInput,chatHistory,chatLoading,chatLog,sendChat,
       companionMood,companionText,companionSpeech,companionClick,initCompanionEyes}
   }
